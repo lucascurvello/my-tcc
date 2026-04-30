@@ -1,0 +1,27 @@
+LaTeX output and temporary files
+
+These files are generated automatically upon compiling and should NOT be tracked by Git.
+
+*.aux
+*.bbl
+*.blg
+*.brf
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.toc
+*.lof
+*.lot
+*.xdv
+*.nav
+*.snm
+*.vrb
+*.bcf
+*.run.xml
+
+OS generated files
+
+.DS_Store
+Thumbs.db
