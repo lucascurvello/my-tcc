@@ -105,7 +105,7 @@
 \include{PreTextuais/Capa}					% Elemento Obrigatório
 \include{PreTextuais/FolhadeRosto}			% Elemento Obrigatório
 % Caso não utilize a Ficha Catalográfica entre na folha de rosto e retire o * de dentro do arquivo FolhadeRosto
-\include{PreTextuais/FichaCatalografica}	% Elemento Obrigatório (Verso da Folha)
+%\include{PreTextuais/FichaCatalografica}	% Elemento Obrigatório (Verso da Folha)
 %\include{PreTextuais/Errata}				% Elemento Opcional
 %\include{PreTextuais/FolhadeAprovacao}		% Elemento Obrigatório
 %\include{PreTextuais/Dedicatoria}			% Elemento Opcional
@@ -127,8 +127,10 @@
 
 
 % ---- Mantenha está estrutura, assim você deixa o trabalho mais organizado -------
-
-\include{Textuais/Capitulo01}
+\include{Textuais/introducao}
+\include{Textuais/fund_teo}
+\include{Textuais/hip_pes}
+%\include{Textuais/Capitulo01}
 %\include{Textuais/Capitulo02}
 %\include{Textuais/Capitulo03}
 
@@ -152,8 +154,7 @@
 % Arquivo alterado para citação (Autor, Ano) ao invés de (AUTOR, Ano) conforme ABNT NBR 10520:2023
 \bibliographystyle{abntex2-alf_revNBR2023.bst}	
 
-\bibliography{abntex2-ref_UDESC_2024}	% Elemento Obrigatório
-
+\bibliography{abntex2-ref_UDESC_2024}		% Elemento Obrigatório
 %\include{PosTextuais/Glossario}				% Elemento Opcional
 %\include{PosTextuais/Apendices}				% Elemento Opcional
 %\include{PosTextuais/Anexos}				% Elemento Opcional

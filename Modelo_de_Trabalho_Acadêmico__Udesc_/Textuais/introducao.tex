@@ -1,0 +1,41 @@
+\chapter{Introdução}
+A robótica tem ampliado significativamente sua presença na sociedade, com 
+sistemas que interagem de forma cada vez mais próxima com os seres humanos. 
+Desde drones de entrega e veículos autônomos até manipuladores industriais,
+ a robótica se consolidou como uma área fundamental para o desenvolvimento 
+ tecnológico. Embora cada categoria de robô possua particularidades operacionais,
+  todas enfrentam desafios teóricos e práticos comuns, especialmente relativos
+   à estimação de estado e ao controle.
+
+O estado de um robô é definido por um conjunto de variáveis, como posição, 
+velocidade, aceleração e atitude (orientação) que, quando integradas aos
+ modelos cinemático e dinâmico do robô, descrevem seu movimento no espaço com
+  precisão. Para obter essas grandezas, o uso de sensores é indispensável, 
+  tanto sensores proprioceptivos quanto exteroceptivos
+
+Para a condução dos testes experimentais deste trabalho, será adotado o robô 
+quadrúpede Go2 (versão EDU), fabricado pela Unitree. Esta plataforma é equipada 
+com diversos sensores, incluindo sensores de força de contato nas patas, LiDAR 
+4D ultra-wide, câmera grande angular, unidade de medida inercial (IMU) e sensores 
+de posição nos motores (encoders).
+
+A locomoção de robôs com pernas exige um módulo de estimação de estados
+ altamente confiável. Por essa razão, o presente projeto utiliza o estimador 
+ MUSE (Multi-Sensor State Estimator). Esse sistema foi concebido como uma 
+ evolução direta da arquitetura apresentada no trabalho "Proprioceptive Sensor 
+ Fusion for Quadruped Robot State Estimation", entregando melhorias consideráveis
+  na precisão e na robustez em relação ao seu antecessor.
+
+Em relação ao middleware, embora o ROS 2 (Robot Operating System) seja o padrão 
+predominante para o desenvolvimento de sistemas robóticos, este trabalho empregará
+ o middleware DLS2 (Dynamic Legged Systems), criado pelo Instituto Italiano de
+  Tecnologia (IIT). A escolha se justifica pelo fato de o DLS2 ser um ambiente 
+  otimizado para a dinâmica de robôs quadrúpedes, o que o torna ideal para a atual
+   aplicação.
+
+Além da validação em hardware, o projeto abrangerá uma etapa em ambiente 
+simulado. Os sensores do robô foram modelados no simulador Gazebo para replicar 
+as condições reais de operação. A análise da telemetria e dos dados do sistema 
+será feita com o auxílio do software PlotJuggler, enquanto o processamento das 
+nuvens de pontos do LiDAR e o mapeamento ficarão a cargo da biblioteca PCL 
+(Point Cloud Library).

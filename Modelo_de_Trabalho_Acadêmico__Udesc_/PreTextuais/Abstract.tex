@@ -5,8 +5,21 @@
 % resumo em inglês
 \begin{resumo}[Abstract]
  \begin{otherlanguage*}{english}
-   Elemento obrigatório para todos os trabalhos de conclusão de curso. Opcional para os demais trabalhos acadêmicos, inclusive para artigo científico. Constitui a versão do resumo em português para um idioma de divulgação internacional. Deve aparecer em página distinta e seguindo a mesma formatação do resumo em português.
+This work presents the implementation and validation of the MUSE 
+(Multi-Sensor State Estimator) multi-sensor state estimator on the Unitree Go2 
+(EDU version) quadruped robot. The primary objective is the application of a 
+robust estimation strategy that combines proprioceptive data (IMU and encoders) 
+and exteroceptive data (LiDAR or camera) to ensure locomotion stability in 
+complex terrains. Unlike conventional approaches, the project utilizes the DLS2 
+(Dynamic Legged Systems) middleware and focuses on reducing position drift 
+through dedicated slip detection modules. The theoretical framework describes 
+the robot's kinematics with 12 degrees of freedom, the cascaded observer 
+architecture (NLO and XKF), and sensor fusion. The estimator's initial 
+validation will be performed in a simulated Gazebo environment, with telemetry 
+analysis via PlotJuggler and spatial data visualization through the PCL
+ (Point Cloud Library), aiming to prepare the system for real-world hardware 
+ applications.
 
-   \textbf{Keywords}: Keyword 1. Keyword 2. Keyword 3. Keyword 4. Keyword 5.
+   \textbf{Keywords}: State estimation. Quadruped robot. Sensor fusion. MUSE. Unitree Go2. Slip detection.
  \end{otherlanguage*}
 \end{resumo}

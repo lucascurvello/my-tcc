@@ -5,7 +5,19 @@
 % resumo em português
 \setlength{\absparsep}{18pt} % ajusta o espaçamento dos parágrafos do resumo
 \begin{resumo}
-Elemento obrigatório que contém a apresentação concisa dos pontos relevantes do trabalho, fornecendo uma visão rápida e clara do conteúdo e das conclusões do mesmo. A apresentação e a redação do resumo devem seguir os requisitos estipulados pela NBR 6028 (ABNT, 2003). Deve descrever de forma clara e sintética a natureza do trabalho, o objetivo, o método, os resultados e as conclusões, visando fornecer elementos para o leitor decidir sobre a consulta do trabalho no todo.
+Este trabalho apresenta a implementação e validação do estimador de estados 
+multissensorial MUSE (Multi-Sensor State Estimator) no robô quadrúpede Unitree 
+Go2 (versão EDU). O objetivo central é a aplicação de uma estratégia de estimação
+ robusta que combine dados proprioceptivos (IMU e encoders) e exteroceptivos 
+ (LiDAR ou câmera) para garantir a estabilidade da locomoção em terrenos 
+ complexos. Diferente das abordagens convencionais, o projeto utiliza o 
+ middleware DLS2 (Dynamic Legged Systems) e foca na redução do drift de posição 
+ por meio de módulos de detecção de deslizamento. A fundamentação teórica descreve 
+ a cinemática do robô com 12 graus de liberdade, a arquitetura de observadores em 
+ cascata (NLO e XKF) e a fusão sensorial. A validação inicial do estimador será 
+ realizada em ambiente simulado no Gazebo, com análise de telemetria via 
+ PlotJuggler e visualização de dados espaciais através da biblioteca PCL, 
+ buscando preparar o sistema para aplicações em hardware real.
 
- \textbf{Palavras-chave}: Palavra 1. Palavra 2. Palavra 3. Palavra 4. Palavra 5.
+ \textbf{Palavras-chave}: Estimação de estado. Robô quadrúpede. Fusão de sensores. MUSE. Unitree Go2. Detecção de deslizamento.
 \end{resumo}

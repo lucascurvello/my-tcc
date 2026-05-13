@@ -1,0 +1,147 @@
+
+\chapter{Fundamentação Teórica}
+
+\section{Hardware: Unitree Go2}
+O Unitree Go2 integra um hardware robusto com tecnologia de ponta em atuadores e 
+sensoriamento. A versão EDU, em particular, destaca-se por oferecer ferramentas 
+avançadas para adaptação de software e integração com sistemas externos, 
+expandindo as capacidades nativas do robô \cite{unitree2024go2}.
+
+Como um robô quadrúpede, o Go2 possui uma estrutura inspirada na biomecânica 
+animal, com um tronco central e quatro membros simétricos. O robô tem 12 graus de 
+liberdade (DoF), distribuídos em três juntas por perna:
+
+\begin{itemize}
+    \item Quadril (Hip): Responsável pelo movimento de abdução e adução (abrir 
+    e fechar a perna lateralmente).
+    \item Coxa (Thigh): Realiza a protração e retração (movimento de avanço e 
+    recuo).
+    \item Panturrilha (Calf): Executa a flexão e extensão, equivalente ao 
+    movimento do joelho.
+\end{itemize}
+
+Para interagir com o ambiente de forma autônoma e segura, o Go2 utiliza um 
+conjunto sensorial de alta tecnologia:
+
+\begin{itemize}
+    \item Lidar 4D L1: Este sensor de medição a laser de alta velocidade realiza 
+    até 21.600 amostras por segundo. Ele fornece informações do ambiente em tempo 
+    real, permitindo o reconhecimento preciso de terrenos e estruturas.
+    \item Câmera Grande Angular HD: Capaz de transmitir vídeo em  até 1080p a 
+    30fps, oferece uma visão rica em detalhes e baixa latência para monitoramento 
+    ou processamento de visão computacional.
+    \item Sensores de Força nas Patas: Localizados nas extremidades de cada 
+    membro, esses sensores detectam o contato com o solo e a intensidade da 
+    pressão exercida. Esses dados são cruciais para o ajuste de equilíbrio em 
+    superfícies irregulares.
+    \item IMU de 9 Eixos: Essencial para a estabilização, a Unidade de Medida 
+    Inercial combina três sensores fundamentais:
+    \begin{itemize}
+        \item Acelerômetro: Mede a aceleração linear nos eixos X, Y e Z.
+        \item Giroscópio: Monitora a velocidade angular (rotação) sobre os eixos.
+        \item Magnetômetro: Identifica a orientação em relação ao campo magnético terrestre.
+    \end{itemize}
+\end{itemize}
+
+\section{Estrutura do estimador de estados MUSE}
+O MUSE (Multi-Sensor State Estimator) representa uma evolução significativa em relação ao 
+seu antecessor apresentado no trabalho \cite{fink2020proprioceptive}.Como um estimador de estados de última geração, 
+ele introduz a fusão de dados exteroceptivos (informações do ambiente) com 
+sensores proprioceptivos, além de incorporar um módulo dedicado à detecção de 
+deslize em um ou mais membros do robô. Essa arquitetura integrada permite que o 
+MUSE apresente um drift (desvio) de posição reduzido, mantendo uma robustez 
+maior, mesmo em cenários de falha sensorial ou navegação em terrenos altamente 
+irregulares e imprevisíveis.
+
+\subsection{Odometria visual e por LiDAR}
+Para o processamento das odometrias de câmera e do Lidar, o MUSE utiliza o 
+algoritmo KISS-ICP. A escolha desta ferramenta justifica-se por sua versatilidade 
+e eficiência computacional. O KISS-ICP demonstra uma capacidade ótima  de 
+adaptação a diversos contextos operacionais utilizando um conjunto reduzido de 
+parâmetros, o que facilita o ajuste do sistema para diferentes ambientes sem a 
+necessidade de muitas mudanças no setup das variáveis \cite{vizzo2023kiss}.
+
+\subsection{Odometria das pernas (leg odometry)}
+A odometria das pernas estima o deslocamento do tronco em tempo real através da 
+cinemática direta dos membros. Para realizar esse processo, parte-se da premissa 
+que as patas em fase de apoio (contato com o solo) estão estáticas em relação ao 
+mundo, permitindo calcular a movimentação do corpo a partir dos ângulos das 
+juntas. No entanto, para que essa estimativa seja correta e precisa, assume-se 
+inicialmente a ausência de deslizamento.
+
+\subsection{Módulo de detecção de deslize (slip detection)}
+Em superfícies com baixo coeficiente de atrito, o robô está sujeito a deslizamentos 
+que geram erros acumulativos (drift) na posição estimada. Para robôs com pernas, 
+uma metodologia de detecção baseada na cinemática é mais adequada do que metodologias 
+baseadas em força/torque, uma vez que a detecção de deslizamentos por forças exigiria
+ o uso de sensores de força/torque de 6 eixos \cite{nistico2022slip}.
+O MUSE soluciona esse 
+problema através de um módulo de detecção de deslize que monitora dois parâmetros: 
+a discrepância entre a velocidade/posição desejada e a atingida. Quando o desvio 
+entre esses valores ultrapassa um limiar crítico, o sistema identifica o deslize 
+em uma pata específica. Essa detecção é vital não apenas para a precisão da 
+estimativa, mas também para permitir que a estratégia de controle do robô se 
+adapte instantaneamente, buscando evitar erros na posição estimada. \cite{nistico2022slip}
+
+\subsection{Observador de atitude e orientação}
+A orientação do robô é processada por uma sofisticada estrutura em cascata, 
+composta por um Observador Não Linear (NLO) em série com um Filtro de Kalman 
+Exógeno (XKF). \cite{fink2020proprioceptive}
+
+\begin{itemize}
+    \item Observador Não Linear (NLO): Atua na observação inicial do sistema, 
+    fornecendo uma estimativa rápida da atitude. Embora eficiente, o NLO pode 
+    divergir se a estimativa inicial estiver muito distante do estado real.
+    \item Filtro de Kalman Exógeno (XKF): Entra como uma camada de correção, 
+    garantindo a estabilidade global do sistema. Ele combina as propriedades de 
+    convergência quase-ótimas do Filtro de Kalman com a robustez do NLO, 
+    garantindo que a orientação seja mantida de forma precisa mesmo em condições 
+    dinâmicas.
+\end{itemize}
+
+A escolha do XKF em vez do tradicional EKF (Filtro de Kalman Estendido) foi 
+proposital. O XKF consegue se manter estável em situações onde o EKF apresenta 
+instabilidade, garantindo que o sistema seja robusto o tempo todo, como exemplificado 
+na obra "The eXogenous Kalman Filter (XKF)" \cite{johansen2017xkf}.
+
+
+\subsection{Fusão de sensorer}
+O MUSE realiza a fusão das medidas inerciais (IMU) com a odometria das pernas e 
+os dados exteroceptivos (câmera/Lidar) por meio de algoritmos baseados em filtros de Kalman. Um diferencial é o desacoplamento entre 
+atitude e posição, o que transforma a dinâmica no Filtro de Kalman em um sistema 
+linear e invariante no tempo (LTI), garantindo a convergência matemática do filtro.
+
+Além disso, o algoritmo lida de forma inteligente com a latência do lidar ou 
+câmera. Enquanto os sensores exteroceptivos (que possuem frequência de 
+processamento mais baixa) não enviam novos dados, o MUSE utiliza a alta frequência
+da IMU e da odometria de pernas para manter uma estimativa imediata. Assim que os 
+dados da câmera ou Lidar chegam, o sistema aplica correções retrospectivas, 
+ajustando a trajetória estimada e eliminando erros acumulados durante o intervalo
+de processamento \cite{nistico2025muse}.
+
+\section{validação em ambiente simulado}
+A primeira parte de validação do estimador de estados será conduzida em ambiente 
+simulado, utilizando o simulador Gazebo. Este software permite uma representação
+muito próxima à realidade da cinemática e da dinâmica do robô Go2,. Além de 
+emular a física do robô, o Gazebo também possibilita a modelagem dos sensores. 
+Para trazer maior confiabilidade à validação do MUSE, no gazebo será configurado 
+ruído nos sensores, aproximando as leituras virtuais das imperfeições e 
+incertezas presentes no mundo físico.
+
+Para a avaliação precisa da performance do estimador e do comportamento do 
+sistema, a simulação contará com ferramentas específicas de análise de dados:
+
+\begin{itemize}
+    \item PlotJuggler: O monitoramento e a análise dos dados brutos serão 
+    realizados através do PlotJuggler. Trata-se de uma ferramenta avançada de 
+    visualização de séries temporais, essencial para a leitura de variáveis do 
+    sistema. Ele será empregado principalmente para analisar o comportamento 
+    temporal das leituras da IMU e avaliar a resposta dos sinais de controle.
+    \item Point Cloud Library (PCL): Para o processamento tridimensional e a 
+    visualização das nuvens de pontos geradas pelo Lidar simulado, bem como para 
+    a representação  dos mapas espaciais construídos, será utilizada a PCL 
+    (Point Cloud Library). Esta biblioteca oferece uma ampla gama de algoritmos e 
+    renderizadores que permitem a inspeção detalhada da geometria do ambiente e a 
+    verificação visual da precisão da odometria exteroceptiva do robô.
+\end{itemize}
+
