@@ -1,0 +1,71 @@
+\chapter{Estimação de estado e filtragem}
+
+\section{Estimação de atitude}
+
+A estimação de estados de um sistema é por muitas vezes um ponto desafiador para o desenvoltimento de um projeto em robótica. Em especial quando se trata de um sistema não linear buscam-se principalmente duas técnicas para a estimação de estados:
+\begin{itemize}
+    \item Métodos baseados em linearização local: Esses métodos são aplicados princilamente quando a principal preocupação é em manter a estabilidade do sistema. 
+
+
+    \item Observadores não-lineares: Os observadores de estado 
+    
+\end{itemize}
+
+
+Expicar o porque da representação em quaternion e explicar brevemente a equação \eqref{eq:quat}
+
+\begin{equation}
+\begin{aligned}
+    \dot{q}_{b}^{n} &= \frac{1}{2} \begin{bmatrix} 0 & -(\omega^{b} - b^{b})^{T} \\ (\omega^{b} - b^{b})^{T} & -S(\omega^{b} - b^{b}) \end{bmatrix} q_{b}^{n} \\
+    \dot{b}^{b} &= 0
+\end{aligned}
+\label{eq:quat}
+\end{equation}
+
+
+
+\begin{subequations}
+\begin{align}
+    \dot{\hat{x}} &= f_x + F(\hat{x} - \bar{x}) + K(z - h_x - H(\hat{x} - \bar{x})) \\
+    \dot{P} &= FP + PF^{T} - KHP + Q \\
+    K &= PH^{T}P^{-1}
+\end{align}
+\end{subequations}
+
+
+
+
+
+
+
+
+\section{Cinemática das pernas}
+
+\begin{equation}
+    \dot{x}_{\ell}^{b} = -\alpha_{\ell} \left( J_{\ell}(q_{\ell})\dot{q} - \omega^{b} \times x_{\ell}^{b} \right)
+\end{equation}
+
+\begin{equation}
+    \dot{x}^{b} = \frac{1}{n_s} \sum_{\ell}^{\mathbb{L}} \dot{x}_{\ell}^{b}
+\end{equation}
+
+onde $n_s = \sum_{\ell}^{\mathbb{L}} \alpha_{\ell}$ é o número de pernas de apoio.
+
+\section{Detecção de Deslizamento}
+
+\begin{equation}
+    \overline{\Delta V} = \sqrt{\sum_{i=x,y,z} \left( \frac{{}_{d}\dot{x}_{f_i}^{b} - 
+    \dot{x}_{f_i}^{b}}{|{}_{d}\dot{x}_{f_i}^{b}| + 
+    m} \right)^2 } \quad , \quad \Delta P = \| {}_{d}x_{f_i}^{b} \| - \| x_{f_i}^{b} \|
+\end{equation}
+
+\section{Odometria Exteroceptiva}
+
+\section{Fusão Sensorial}
+\begin{subequations}
+\begin{align}
+    \dot{\hat{x}} &= f_x + K(z - h_x) \\
+    \dot{P} &= FP + PF^{T} - KHP + Q \\
+    K &= PH^{T}R^{-1}
+\end{align}
+\end{subequations}

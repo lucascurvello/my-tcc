@@ -1,0 +1,38 @@
+\chapter{Introdução}
+
+\section{Contextualização}
+
+A utilização de robôs com pernas tem se tornado cada vez mais interessante em diversas áreas. Isso se deve à sua alta capacidade de locomoção, proveniente de múltiplos graus de liberdade. Essa característica gera nas plataformas uma elevada adaptabilidade cinemática ao ambiente, tornando-as consideravelmente mais versáteis que robôs de esteiras ou com rodas, especialmente em terrenos irregulares.
+
+A versatilidade das plataformas robóticas com pernas permite sua atuação em uma ampla gama de cenários práticos. Na indústria, destacam-se na execução de tarefas repetitivas ou na inspeção de ambientes onde a presença humana é desnecessária ou inviável. Além disso, são amplamente usados no âmbito da pesquisa científica, focada na exploração de ambientes inóspitos ou perigosos. Algumas aplicações principais incluem a exploração espacial, o combate a incêndios, o resgate em desastres e a análise de ambientes de difícil acesso, mitigando os riscos diretos à vida humana.
+
+\section{Problemática}
+
+Embora a aplicação de robôs com pernas, em especial os quadrúpedes, seja bastante promissora, para que essas plataformas deixem os laboratórios e atuem em aplicações reais, é necessário garantir a confiabilidade do robô, mesmo em circunstâncias desfavoráveis, como em casos de escorregamentos. Também é necessário que o robô compreenda e interaja com o ambiente, evitando obstáculos e pessoas. Para que esses objetivos sejam alcançados, é essencial que a plataforma tenha a capacidade de estimar em tempo real sua pose e velocidade com precisão e robustez, utilizando apenas sensores e computadores embarcados. Tal processo é conhecido como estimação de estados. Ele é fundamental, pois fornece os dados necessários para diversas etapas do controle do robô, como o planejamento de trajetória, a manutenção do equilíbrio, o mapeamento do ambiente e a navegação autônoma. Para obter uma estimativa de estados robusta e precisa, destaca-se o uso da fusão de dados provenientes de sensores proprioceptivos e exteroceptivos.
+
+Contudo, mesmo com métodos avançados de fusão sensorial, existem cenários nos quais os algoritmos traducionar têndem a falhar. Tais situações são encontradas principalmente quando o robô perde a tração em suas patas ao andar em superfícies com baixo atrito ou está em um plano que sujeito à deslizamento (como uma esteira), o que desvalida a odometria desenvolvida com base nos sensores de encoder das pernas. 
+
+Nesse contexto, o trabalho buscou aplicar o estimador de estados MUSE (Multi-sensor state estimator), que se mostrou preciso, exato e robusto que funde dados de sensores proprioceptivos e exteroceptivos. Além disso, ele conta com um módulo de detecção de deslizamentos, utilizado para que o estimador possua adaptabilidade dinâmica no seu funcionamento quando sujeito à situações de deslizamento de uma ou multiplas pernas. A aplicação do MUSE à plataforma robótica Go2 - EDU, deu-se ao fato da crescente adoção desse robô comercial em diversas aplicações práticas e de pesquisa. Dessa forma, a validação do estimador no robô Go2 estabelece uma base sólida para o desenvolvimento de novos trabalhos nas áreas de controle e navegação, beneficiando diretamente os projetos do grupo MOBILab da UDESC e oferecendo contribuições relevantes para a comunidade científica.
+
+
+
+\section{Objetivos}
+
+\subsection{Objetivo Geral}
+Implementar, integrar e validar o estimador de estados MUSE na plataforma robótica quadrúpede Unitree Go2-EDU, visando estimar, com precisão e robustez, informações sobre a orientação e a posição da plataforma, mesmo diante de situações de escorregamento.
+
+\subsection{Objetivos Específicos}
+\begin{itemize}
+    \item Simular os sensores proprioceptivos e exteroceptivos em ambiente de simulação virtual;
+    \item Validar o funcionamento do algoritmo MUSE em simulação utilizando um modelo de robô quadrúpede genérico;
+    \item Estabelecer a comunicação entre a plataforma Go2 e o middleware DLS2;
+    \item Validar experimentalmente o desempenho do MUSE no hardware real, conduzindo testes práticos com foco em:
+    \begin{itemize}
+        \item Estimação de atitude;
+        \item Estimação de posição;
+        \item Detecção de deslizamento;
+        \item Estimação de estados geral.
+    \end{itemize}
+\end{itemize}
+
+\section{Estrutura do Trabalho}

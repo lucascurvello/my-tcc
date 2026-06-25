@@ -1,0 +1,44 @@
+\chapter{Metodologia e implementação do sistema}
+
+\section{Plataforma robótica}
+
+Explicar o robô go2 e seus sensores
+
+\section{Arquitetura e o middleware DLS2}
+Verificar::
+Para a integração do sistema, utilizou-se o DLS2, um framework mantido pelo laboratório Dynamic Legged Systems (DLS), voltado ao controle e à aquisição de dados em tempo real para robôs com pernas. A arquitetura do DLS2 emprega o Data Distribution Service (DDS) como middleware de comunicação. O DDS opera de forma descentralizada, seguindo o modelo de publicação e assinatura (publish-subscribe), permitindo que os diferentes processos do robô compartilhem informações com baixa latência e por meio de políticas configuráveis de Qualidade de Serviço (Quality of Service – QoS). Essas características favorecem os requisitos de determinismo necessários ao controle dinâmico da locomoção e proporcionam integração nativa com o ecossistema ROS 2.
+
+\section{Ambiente de simulação}
+
+Explicar sobre o gazebo plugins de sensores e urdf
+
+\section{Implementação do Estimador de estados MUSE}
+
+\subsection{Módulo de Estimação de Atitude}
+
+\texttt{attitude\_estimation}, olhar no artigo
+
+\subsection{Módulo de Contato com o chão}
+
+stance estimaiton
+
+\subsection{Módulo de Odometria das pernas}
+
+leg odometry
+
+\subsection{Módulo de detecção de deslize}
+
+slip detection
+
+\subsection{Módulo de fusão dos sensores}
+
+sensor fusion
+
+
+\section{Metodologia de Validação do Estimador de Estado MUSE}
+
+Explicar os testes que serão feitos
+Variação de attitude
+variação de posição
+variação de ambos
+deslize
