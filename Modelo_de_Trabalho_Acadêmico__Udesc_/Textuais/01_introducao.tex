@@ -8,7 +8,7 @@ A versatilidade das plataformas robóticas com pernas permite sua atuação em u
 
 \section{Problemática}
 
-Embora a aplicação de robôs com pernas, em especial os quadrúpedes, seja bastante promissora, para que essas plataformas deixem os laboratórios e atuem em aplicações reais, é necessário garantir a confiabilidade do robô, mesmo em circunstâncias desfavoráveis, como em casos de escorregamentos. Também é necessário que o robô compreenda e interaja com o ambiente, evitando obstáculos e pessoas. Para que esses objetivos sejam alcançados, é essencial que a plataforma tenha a capacidade de estimar em tempo real sua pose e velocidade com precisão e robustez, utilizando apenas sensores e computadores embarcados. Tal processo é conhecido como estimação de estados. Ele é fundamental, pois fornece os dados necessários para diversas etapas do controle do robô, como o planejamento de trajetória, a manutenção do equilíbrio, o mapeamento do ambiente e a navegação autônoma. Para obter uma estimativa de estados robusta e precisa, destaca-se o uso da fusão de dados provenientes de sensores proprioceptivos e exteroceptivos.
+Embora a aplicação de robôs com pernas, em especial os quadrúpedes, seja bastante promissora, para que essas plataformas deixem os laboratórios e atuem em aplicações reais, é necessário garantir a confiabilidade do robô, mesmo em circunstâncias desfavoráveis, como em casos de escorregamentos. Também é necessário que o robô compreenda e interaja com o ambiente, evitando obstáculos e pessoas. Para que esses objetivos sejam alcançados, é essencial que a plataforma tenha a capacidade de estimar em tempo real sua pose e velocidade com precisão e robustez, utilizando apenas sensores e computadores embarcados. Tal processo é conhecido como estimação de estados. Ele é fundamental, pois fornece os dados necessários para diversas etapas do controle do robô, como o planejamento de trajetória, a manutenção do equilíbrio e o mapeamento do ambiente. Para obter uma estimativa de estados robusta e precisa, destaca-se o uso da fusão de dados provenientes de sensores proprioceptivos e exteroceptivos.
 
 Contudo, mesmo com métodos avançados de fusão sensorial, existem cenários nos quais os algoritmos traducionar têndem a falhar. Tais situações são encontradas principalmente quando o robô perde a tração em suas patas ao andar em superfícies com baixo atrito ou está em um plano que sujeito à deslizamento (como uma esteira), o que desvalida a odometria desenvolvida com base nos sensores de encoder das pernas. 
 
@@ -35,4 +35,3 @@ Implementar, integrar e validar o estimador de estados MUSE na plataforma robót
     \end{itemize}
 \end{itemize}
 
-\section{Estrutura do Trabalho}

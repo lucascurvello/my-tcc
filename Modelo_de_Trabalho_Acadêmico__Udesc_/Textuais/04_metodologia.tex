@@ -1,44 +1,63 @@
 \chapter{Metodologia e implementação do sistema}
 
-\section{Plataforma robótica}
+% \section{Plataforma robótica}
 
-Explicar o robô go2 e seus sensores
+% Explicar o robô go2 e seus sensores
 
 \section{Arquitetura e o middleware DLS2}
-Verificar::
 Para a integração do sistema, utilizou-se o DLS2, um framework mantido pelo laboratório Dynamic Legged Systems (DLS), voltado ao controle e à aquisição de dados em tempo real para robôs com pernas. A arquitetura do DLS2 emprega o Data Distribution Service (DDS) como middleware de comunicação. O DDS opera de forma descentralizada, seguindo o modelo de publicação e assinatura (publish-subscribe), permitindo que os diferentes processos do robô compartilhem informações com baixa latência e por meio de políticas configuráveis de Qualidade de Serviço (Quality of Service – QoS). Essas características favorecem os requisitos de determinismo necessários ao controle dinâmico da locomoção e proporcionam integração nativa com o ecossistema ROS 2.
 
-\section{Ambiente de simulação}
+% \section{Ambiente de simulação}
 
-Explicar sobre o gazebo plugins de sensores e urdf
+% Explicar sobre o gazebo plugins de sensores e urdf
 
 \section{Implementação do Estimador de estados MUSE}
+Como relatado anteriormente, o MUSE é dividido em 5 módulos principais que trabalham juntamente para ter uma estimação de estado precisa e robusta. Cada um dos tópicos interage com diferentes tópicos via DDS para a leitura de dados. Abaixo, segue a explicação de como cada um dos tópicos é implementado dentro do ecossistema do middleware DLS2:
 
 \subsection{Módulo de Estimação de Atitude}
+O módulo de estimação de atitude é responsável por determinar a inclinação do robô, bem como as suas respectivas velocidades angulares nos eixos coordenados. Sua implementação é feita por meio de quatro arquivos, sendo eles:
+\begin{itemize}
+    \item \texttt{attitude\_nlo.cpp}: Faz a implementação em código do observador não linear.
+    \item \texttt{attitude\_xkf.cpp}: Faz a implementação em código do filtro de Kalman exógeno.
+    \item \texttt{attitude\_estimation.cpp}: Define as estruturas fundamentais do módulo, tais como matrizes de covariância de erro, de processo e de medição. Além disso, realiza a implementação central do estimador de atitude, efetuando o cascateamento entre o observador não linear e o filtro de Kalman exógeno. Também fornece funções que podem ser chamadas em outros códigos para o uso da estrutura de estimação de atitude.
+    \item \texttt{attitude\_estimation\_plugin.cpp}: Realiza a aplicação prática do estimador de atitude. Assina os tópicos para a recepção dos dados da IMU e, se disponível, da odometria exteroceptiva. Além disso, invoca as funções implementadas em \texttt{attitude\_estimation.cpp} e publica a atitude estimada nos tópicos \texttt{base\_state} e \texttt{base\_state\_estimate}. 
+\end{itemize}
 
-\texttt{attitude\_estimation}, olhar no artigo
-
-\subsection{Módulo de Contato com o chão}
-
-stance estimaiton
+\subsection{Módulo de detecção de contato com o solo}
+O módulo de detecção de contato com o solo tem a função de verificar quais patas estão em contato com uma superfície e quais estão em movimento. O módulo é formado por dois arquivos:
+\begin{itemize}
+    \item \texttt{stance\_detection.cpp}: Implementa os cálculos necessários para determinar o estado de contato de cada pata. Há duas formas de definir se a pata está tocando o chão: por meio dos sensores de força presentes em cada pata, ou através das forças de reação com o solo (do inglês, Ground reaction forces -- GRF). No algoritmo, foi implementado um sinalizador (\textit{flag}) que é usado para definir qual dos métodos de detecção será utilizado. Caso sejam utilizados os sensores, o código compara as leituras de força do sensor com um valor de referência (\textit{threshold}) calibrado previamente, e retorna uma \textit{flag} binária definindo o estado de contato de cada perna. Caso seja utilizado o método GRF, são utilizados os dados das juntas das pernas para definir se a força de reação do solo define realmente um contato com o solo.
+    \item \texttt{stance\_detection\_plugin.cpp}: Esse algoritmo realiza a assinatura aos tópicos que recebem os dados dos sensores presentes nas juntas da perna do robô. Em seguida, utilizam-se esses dados nas funções implementadas no código \texttt{stance\_detection.cpp}, e o estado de contato resultante é publicado no tópico \texttt{stance\_estimation}.
+\end{itemize}
 
 \subsection{Módulo de Odometria das pernas}
 
-leg odometry
+O módulo de odometria das pernas tem como função principal definir a posição relativa do robô e sua velocidade linear nos respectivos eixos coordenados \cite{nistico2025muse}. É formado por dois arquivos:
+\begin{itemize}
+    \item \texttt{leg\_odometry.cpp}: Por meio da cinemática direta e uso de jacobianos calcula as velocidades angulares e lineares da perna. Além disso, utiliza a biblioteca cinemática \texttt{robotlib} para calcular as velocidades lineares do robô.
+    \item \texttt{leg\_odometry\_plugin.cpp}: Realiza a assinatura aos tópicos dos sensores das juntas da perna, do estimador de atitude e do estado de contato com o solo. Utiliza as funções do algoritmo \texttt{leg\_odometry.cpp} para calcular a velocidade média da base e a transforma para o referencial do mundo (\textit{world frame}). Ao final, publica no tópico \texttt{legs\_pose} as velocidades das pernas, da base e o estado de contato com o solo.
+\end{itemize}
 
 \subsection{Módulo de detecção de deslize}
+Este módulo busca implementar uma locomoção proprioceptivamente ciente do terreno (do inglês, Proprioceptive terrain aware locomotion -- PTAL), com foco em ambientes com superfície deslizante e na detecção de que o robô sofreu deslizamento em uma ou múltiplas pernas \cite{nistico2022slip}. O algoritmo é formado por dois arquivos:
 
-slip detection
+\begin{itemize}
+    \item \texttt{slip\_detection.cpp}: Implementa o cálculo da diferença entre a velocidade linear desejada, proveniente do gerador de trajetória, e a velocidade linear atingida em cada perna. Faz o mesmo para a posição desejada, proveniente do gerador de trajetória, e a posição real atingida pela perna. Então, compara esses dados com um valor de referência (\textit{threshold}) configurado anteriormente. Caso a diferença seja maior que o \textit{threshold}, um indicador de deslize é ativo.
+    \item \texttt{slip\_detection\_plugin.cpp}: Assina e lê os tópicos do gerador de trajetória, dados das juntas das pernas e contato das pernas com o solo. Utiliza os métodos do algoritmo \texttt{slip\_detection.cpp} para calcular o estado de deslizamento das pernas e os publica no tópico \texttt{slip\_flag}.
+\end{itemize}
 
 \subsection{Módulo de fusão dos sensores}
-
-sensor fusion
-
+Este módulo funde os dados inerciais, odometria das pernas e odometria do LiDAR. As dimensões do vetor de medições variam entre $z \in \mathbb{R}^6$ e $z \in \mathbb{R}^9$, dependendo se a odometria exteroceptiva está disponível \cite{nistico2025muse}. O módulo dispõe de dois arquivos:
+\begin{itemize}
+    \item \texttt{kf\_sensor\_fusion.cpp}: Faz a implementação do filtro de Kalman para a fusão dos dados, contando com a etapa de predição e correção. Na etapa de correção, verifica se há disponibilidade dos dados do LiDAR e define o tamanho da matriz de medições. Além disso, faz uso dos dados provenientes do módulo de detecção de deslize. Se é constatado um deslize, atualiza os valores da matriz de covariância de ruído da odometria das pernas, para que a estimação tenha maior influência da odometria do LiDAR e dados inerciais.
+    \item \texttt{kf\_sensor\_fusion\_plugin.cpp}: Assinala os tópicos da IMU, odometria das pernas, estimação de atitude, detecção de deslize e odometria do LiDAR. Executa a predição do filtro de Kalman, verifica a disponibilidade da odometria exteroceptiva e executa a etapa de correção utilizando o algoritmo \texttt{kf\_sensor\_fusion.cpp}.
+\end{itemize}
 
 \section{Metodologia de Validação do Estimador de Estado MUSE}
-
-Explicar os testes que serão feitos
-Variação de attitude
-variação de posição
-variação de ambos
-deslize
+Para a validação do estimador, serão realizados diversos testes concentrados em avaliar os diversos focos do estimador MUSE, sendo eles:
+\begin{itemize}
+    \item Variação de atitude: neste teste, faremos o robô variar sua orientação em \textit{roll}, \textit{pitch} e \textit{yaw}. Isso com o objetivo de testar a efetividade do estimador de atitude.
+    \item Variação de posição: este teste pode ser dividido em diversas subetapas, podendo compreender agachamentos, para a variação da posição no eixo $z$, e caminhadas moderadas em superfícies planas de coeficiente de atrito adequado, para a variação da posição nos eixos $x$ e $y$.
+    \item Teste de deslize: este teste é focado na efetividade da estimação de estados quando as pernas estão sujeitas a deslize. O robô andará por um solo com baixo coeficiente de atrito.
+    \item Teste generalizado de caminhada: neste teste o foco seria uma caminhada por diversos ambientes, podendo compreender escadas e diversos tipos de solo, incluindo solo deslizante.
+\end{itemize}
