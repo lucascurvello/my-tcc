@@ -1,15 +1,48 @@
 \chapter{Metodologia e implementação do sistema}
 
-% \section{Plataforma robótica}
+\section{Plataforma robótica}
 
-% Explicar o robô go2 e seus sensores
+Explicar o robô go2 e seus sensores
+
+Lançado no dia 12 de Julho de 2023, o robô Go2 da Unitree surgiu como uma continuação do robô Go1, lançado em junho de 2021. O principal diferencial da nova plataforma foi a presença de um sensor Lidar 4D ultra-wide-angle. Em especial, a versão educacional, Go2 EDU (Figura \ref{fig:unitree_go2}), apresenta vantagens quando o objetivo é o desenvolvimento pesquisas. Isso pois conta com sensores exclusivos, tais como o sensor de força de contato e principalmente por ter interfaces que fazem possível a integração de sistemas externos com o hardware do robô.
+
+\begin{figure}[htb]
+    \centering
+    \caption{Robô quadrúpede Unitree Go2 EDU}
+    \label{fig:unitree_go2}
+    \includegraphics[width=0.5\textwidth]{Textuais/go2_edu.png} 
+    \fonte{\citeonline{unitree_go2}.}
+\end{figure}
+
+Tendo como foco a versão educacional do robô Go2, descrevem-se os seus componentes:
+
+\begin{itemize}
+    \item Lidar 4D L1: Este sensor de medição a laser de alta velocidade realiza 
+    até 21.600 amostras por segundo. Ele fornece informações do ambiente em tempo 
+    real, permitindo o reconhecimento preciso de terrenos e estruturas. \cite{unitree_lidar}
+    \item Câmera Grande Angular HD: Capaz de transmitir vídeo em  até 1080p a 
+    30fps, oferece uma visão rica em detalhes e baixa latência para monitoramento 
+    ou processamento de visão computacional.
+    \item Sensores de Força nas Patas: Localizados nas extremidades de cada 
+    membro, esses sensores detectam o contato com o solo e a intensidade da 
+    pressão exercida. Esses dados são cruciais para o ajuste de equilíbrio em 
+    superfícies irregulares.
+    \item IMU de 9 Eixos: A Unidade de Medida 
+    Inercial combina três sensores fundamentais:
+    \begin{itemize}
+        \item Acelerômetro: Mede a aceleração linear nos eixos X, Y e Z.
+        \item Giroscópio: Monitora a velocidade angular (rotação) sobre os eixos.
+        \item Magnetômetro: Identifica a orientação em relação ao campo magnético terrestre.
+    \end{itemize}
+\end{itemize}
+
 
 \section{Arquitetura e o middleware DLS2}
 Para a integração do sistema, utilizou-se o DLS2, um framework mantido pelo laboratório Dynamic Legged Systems (DLS), voltado ao controle e à aquisição de dados em tempo real para robôs com pernas. A arquitetura do DLS2 emprega o Data Distribution Service (DDS) como middleware de comunicação. O DDS opera de forma descentralizada, seguindo o modelo de publicação e assinatura (publish-subscribe), permitindo que os diferentes processos do robô compartilhem informações com baixa latência e por meio de políticas configuráveis de Qualidade de Serviço (Quality of Service – QoS). Essas características favorecem os requisitos de determinismo necessários ao controle dinâmico da locomoção e proporcionam integração nativa com o ecossistema ROS 2.
 
-% \section{Ambiente de simulação}
+\section{Ambiente de simulação}
 
-% Explicar sobre o gazebo plugins de sensores e urdf
+Explicar sobre o gazebo plugins de sensores e urdf
 
 \section{Implementação do Estimador de estados MUSE}
 Como relatado anteriormente, o MUSE é dividido em 5 módulos principais que trabalham juntamente para ter uma estimação de estado precisa e robusta. Cada um dos tópicos interage com diferentes tópicos via DDS para a leitura de dados. Abaixo, segue a explicação de como cada um dos tópicos é implementado dentro do ecossistema do middleware DLS2:
